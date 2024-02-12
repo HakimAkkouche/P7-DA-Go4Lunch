@@ -6,18 +6,18 @@
     <group
         android:checkableBehavior="single">
         <item
-            android:id="@+id/your_lunch"
-            android:icon="@drawable/ic_recenter_gps_24"
+            android:id="@+id/nav_item_your_lunch"
+            android:icon="@drawable/ic_your_lunch"
             android:title="YOUR LUNCH"
             />
         <item
-            android:id="@+id/settings"
-            android:icon="@drawable/ic_recenter_gps_24"
+            android:id="@+id/nav_item_settings"
+            android:icon="@drawable/ic_settings"
             android:title="SETTINGS"
             />
         <item
-            android:id="@+id/logout"
-            android:icon="@drawable/ic_recenter_gps_24"
+            android:id="@+id/nav_item_logout"
+            android:icon="@drawable/ic_logout"
             android:title="LOGOUT"
             />
     </group>

@@ -12,15 +12,16 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
 import com.haksoftware.go4lunch.databinding.ActivityLoginBinding;
-import com.haksoftware.go4lunch.repository.ColleaguesRepository;
+import com.haksoftware.go4lunch.repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class LoginActivity  extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private ActivityLoginBinding binding;
+
+    private UserRepository userRepository = UserRepository.getInstance();
 
     /**
      * {@inheritDoc}
@@ -35,7 +36,12 @@ public class LoginActivity  extends AppCompatActivity {
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        startSignInActivity();
+        if(userRepository.getCurrentUser() != null) {
+            launchActivityConnected();
+        }
+        else {
+            startSignInActivity();
+        }
     }
 
 
@@ -59,7 +65,7 @@ public class LoginActivity  extends AppCompatActivity {
                         .setTheme(R.style.LoginTheme)
                         .setAvailableProviders(providers)
                         .setIsSmartLockEnabled(false, true)
-                        .setLogo(R.mipmap.ic_logo)
+                        .setLogo(R.mipmap.logo)
                         .build(),
                 RC_SIGN_IN);
     }
@@ -74,10 +80,8 @@ public class LoginActivity  extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             // SUCCESS
             if (resultCode == RESULT_OK) {
-                ColleaguesRepository.getInstance().createColleague();
-                Toast.makeText(this, getString(R.string.connection_succeed), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                userRepository.createColleague();
+                launchActivityConnected();
             } else {
                 // ERRORS
                 if (response == null) {
@@ -91,5 +95,10 @@ public class LoginActivity  extends AppCompatActivity {
                 }
             }
         }
+    }
+    private void launchActivityConnected(){
+        Toast.makeText(this, getString(R.string.connection_succeed), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }

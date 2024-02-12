@@ -1,19 +1,22 @@
 package com.haksoftware.go4lunch.ui.colleagues;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.haksoftware.go4lunch.model.Colleague;
+import com.haksoftware.go4lunch.repository.UserRepository;
+
+import java.util.List;
+
 public class ColleaguesViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private UserRepository userRepository;
 
-    public ColleaguesViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+    public ColleaguesViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public MutableLiveData<List<Colleague>> getColleagues(){
+        return userRepository.getAllWColleagues();
     }
 }

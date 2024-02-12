@@ -1,6 +1,6 @@
 package com.haksoftware.go4lunch.ui.colleagues;
 
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
@@ -9,13 +9,35 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ColleaguesListAdapter extends ListAdapter<ColleagueItem, ColleaguesListAdapter.ViewHolder> {
-    protected ColleaguesListAdapter(@NonNull DiffUtil.ItemCallback<ColleagueItem> diffCallback) {
-        super(diffCallback);
+import com.bumptech.glide.Glide;
+import com.haksoftware.go4lunch.R;
+import com.haksoftware.go4lunch.databinding.ColleagueItemListBinding;
+import com.haksoftware.go4lunch.model.Colleague;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class ColleaguesListAdapter extends ListAdapter<Colleague, ColleaguesListAdapter.ColleagueViewHolder> {
+
+
+    protected ColleaguesListAdapter() {
+        super(new DiffUtil.ItemCallback<Colleague>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Colleague oldItem, @NonNull Colleague newItem) {
+                boolean result = oldItem.equals(newItem);
+                return result;
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Colleague oldItem, @NonNull Colleague newItem) {
+                boolean result = oldItem.equals(newItem);
+                return result;
+            }
+        });
     }
 
     /**
-     * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
+     * Called when RecyclerView needs a new {@link ColleagueViewHolder} of the given type to represent
      * an item.
      * <p>
      * This new ViewHolder should be constructed with a new View that can represent the items
@@ -23,26 +45,27 @@ public class ColleaguesListAdapter extends ListAdapter<ColleagueItem, Colleagues
      * layout file.
      * <p>
      * The new ViewHolder will be used to display items of the adapter using
-     * {@link #onBindViewHolder(ViewHolder, int)}. Since it will be re-used to display
+     * {@link #onBindViewHolder(ColleagueViewHolder, int)}. Since it will be re-used to display
      * different items in the data set, it is a good idea to cache references to sub views of
-     * the View to avoid unnecessary {@link View#findViewById(int)} calls.
+     * the View to avoid unnecessary {@link ViewGroup#findViewById(int)} calls.
      *
      * @param parent   The ViewGroup into which the new View will be added after it is bound to
      *                 an adapter position.
      * @param viewType The view type of the new View.
      * @return A new ViewHolder that holds a View of the given view type.
      * @see #getItemViewType(int)
-     * @see #onBindViewHolder(ViewHolder, int)
+     * @see #onBindViewHolder(ColleagueViewHolder, int)
      */
     @NonNull
     @Override
-    public ColleaguesListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+    public ColleagueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ColleagueItemListBinding binding = ColleagueItemListBinding.inflate(LayoutInflater.from(parent.getContext()));
+        return new ColleagueViewHolder(binding);
     }
 
     /**
      * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the {@link ViewHolder#itemView} to reflect the item at the given
+     * update the contents of the {@link ColleagueViewHolder#itemView} to reflect the item at the given
      * position.
      * <p>
      * Note that unlike {@link ListView}, RecyclerView will not call this method
@@ -50,10 +73,10 @@ public class ColleaguesListAdapter extends ListAdapter<ColleagueItem, Colleagues
      * invalidated or the new position cannot be determined. For this reason, you should only
      * use the <code>position</code> parameter while acquiring the related data item inside
      * this method and should not keep a copy of it. If you need the position of an item later
-     * on (e.g. in a click listener), use {@link ViewHolder#getAdapterPosition()} which will
+     * on (e.g. in a click listener), use {@link ColleagueViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
      * <p>
-     * Override {@link #onBindViewHolder(ViewHolder, int)} instead if Adapter can
+     * Override {@link #onBindViewHolder(ColleagueViewHolder, int)} instead if Adapter can
      * handle efficient partial bind.
      *
      * @param holder   The ViewHolder which should be updated to represent the contents of the
@@ -61,13 +84,32 @@ public class ColleaguesListAdapter extends ListAdapter<ColleagueItem, Colleagues
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull ColleaguesListAdapter.ViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull ColleaguesListAdapter.ColleagueViewHolder holder, int position) {
+        holder.bind((Colleague) getItem(position));
     }
-    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
+    public static class ColleagueViewHolder extends RecyclerView.ViewHolder {
+
+        ColleagueItemListBinding binding;
+        public ColleagueViewHolder(@NonNull ColleagueItemListBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+        public void bind(@NonNull Colleague colleague) {
+            String todayRestaurant = binding.getRoot().getContext().getString(R.string.choice_not_made);
+            String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            if(colleague.getLastSelectedRestaurantDate() != null) {
+                if(colleague.getLastSelectedRestaurantDate().equals(currentDate))  {
+                    todayRestaurant = binding.getRoot().getContext().getString(R.string.choice_made);
+                    todayRestaurant += " " + colleague.getSelectedRestaurant().getName();
+                }
+            }
+            binding.nameColleague.setText(colleague.getUserName() + " " + todayRestaurant);
+            Glide.with(binding.getRoot())
+                    .load(colleague.getUrlPicture())
+                    .circleCrop()
+                    .into(binding.colleagueAvatar);
+
         }
     }
 }

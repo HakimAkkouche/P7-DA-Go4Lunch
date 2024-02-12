@@ -1,12 +1,10 @@
 package com.haksoftware.go4lunch.repository;
 
 
-import com.haksoftware.go4lunch.model.nearbysearch_json_with_pojo.Root;
-import com.haksoftware.go4lunch.retrofit.GMapApi;
+import com.haksoftware.go4lunch.model.nearbysearch_json_with_pojo.ResponseGMAP;
+import com.haksoftware.go4lunch.utils.PlacesApiHelper;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestaurantRepository {
 
@@ -21,15 +19,9 @@ public class RestaurantRepository {
         return instance;
     }
 
-    public Call<Root> getNearbyRestaurants(String url, String location, int radius, String type, String key) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    public Call<ResponseGMAP> getNearbyRestaurants(double latitude, double longitude, int radius) {
 
-        GMapApi gMapApi = retrofit.create(GMapApi.class);
-
-        Call<Root> call = gMapApi.getAllRestaurant(location, radius, type, key);
+        Call<ResponseGMAP> call = PlacesApiHelper.getNearbyRestaurants(latitude, longitude, radius);
         return call;
     }
 }

@@ -1,58 +1,115 @@
 package com.haksoftware.go4lunch.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class Restaurant {
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Objects;
+
+public class Restaurant implements Parcelable {
 
     private String restaurantId;
     private String name;
     @Nullable
     private String phoneNumber;
-    private Float rating;
+    private float rating;
     @Nullable
     private String type;
     @Nullable
     private String urlPicture;
-    @Nullable
-    private String webSite;
     private String address;
     private String openingHours;
+    private String editorialSummary;
+    private String urlWebsite;
+    private double latitude;
+    private double longitude;
 
+    // Constructeur sans argument nécessaire pour la désérialisation Firebase
+    public Restaurant() {
+    }
     public Restaurant(String restaurantId,
                       String name,
                       @Nullable String phoneNumber,
-                      Float rating,
+                      float rating,
                       @Nullable String type,
                       @Nullable String urlPicture,
-                      @Nullable String webSite,
                       String address,
-                      String openingHours) {
+                      String openingHours,
+                      String editorialSummary,
+                      String urlWebsite,
+                      LatLng latLng) {
         this.restaurantId = restaurantId;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.rating = rating;
         this.type = type;
         this.urlPicture = urlPicture;
-        this.webSite = webSite;
         this.address = address;
         this.openingHours = openingHours;
+        this.editorialSummary = editorialSummary;
+        this.urlWebsite = urlWebsite;
+        this.latitude = latLng.latitude;
+        this.longitude = latLng.longitude;
+    }
+    // Parcelable implementation
+    protected Restaurant(Parcel in) {
+        restaurantId = in.readString();
+        name = in.readString();
+        phoneNumber = in.readString();
+        rating = in.readFloat();
+        type = in.readString();
+        urlPicture = in.readString();
+        address = in.readString();
+        openingHours = in.readString();
+        editorialSummary = in.readString();
+        urlWebsite = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
     }
 
-    //region getters/setters
+    public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
+        @Override
+        public Restaurant createFromParcel(Parcel in) {
+            return new Restaurant(in);
+        }
+
+        @Override
+        public Restaurant[] newArray(int size) {
+            return new Restaurant[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(restaurantId);
+        dest.writeString(name);
+        dest.writeString(phoneNumber);
+        dest.writeDouble(rating);
+        dest.writeString(type);
+        dest.writeString(urlPicture);
+        dest.writeString(address);
+        dest.writeString(openingHours);
+        dest.writeString(urlWebsite);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+    }
+
+    //region getters
     public String getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(String restaurantId) {
-        this.restaurantId = restaurantId;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Nullable
@@ -60,16 +117,8 @@ public class Restaurant {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(@Nullable String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Float getRating() {
+    public float getRating() {
         return rating;
-    }
-
-    public void setRating(Float rating) {
-        this.rating = rating;
     }
 
     @Nullable
@@ -77,43 +126,54 @@ public class Restaurant {
         return type;
     }
 
-    public void setType(@Nullable String type) {
-        this.type = type;
-    }
-
     @Nullable
     public String getUrlPicture() {
         return urlPicture;
-    }
-
-    public void setUrlPicture(@Nullable String urlPicture) {
-        this.urlPicture = urlPicture;
-    }
-
-    @Nullable
-    public String getWebSite() {
-        return webSite;
-    }
-
-    public void setWebSite(@Nullable String webSite) {
-        this.webSite = webSite;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getOpeningHours() {
         return openingHours;
     }
 
-    public void setOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
+    @Nullable
+    public String getEditorialSummary() {
+        return editorialSummary;
     }
 
+    public String getUrlWebsite() {
+        return urlWebsite;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(latitude, longitude);
+    }
     //endregion
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Restaurant)) return false;
+        Restaurant that = (Restaurant) o;
+        return Float.compare(that.rating, rating) == 0
+                && Objects.equals(restaurantId, that.restaurantId)
+                && Objects.equals(name, that.name)
+                && Objects.equals(phoneNumber, that.phoneNumber)
+                && Objects.equals(type, that.type)
+                && Objects.equals(urlPicture, that.urlPicture)
+                && Objects.equals(address, that.address)
+                && Objects.equals(openingHours, that.openingHours)
+                && Objects.equals(editorialSummary, that.editorialSummary)
+                && Objects.equals(latitude, that.latitude)
+                && Objects.equals(longitude, that.longitude);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(restaurantId, name, phoneNumber, rating, type, urlPicture, address, openingHours, editorialSummary, latitude, longitude);
+    }
 }
