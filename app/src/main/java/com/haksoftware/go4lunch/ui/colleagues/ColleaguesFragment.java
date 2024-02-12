@@ -1,4 +1,4 @@
-package com.haksoftware.go4lunch.ui.notifications;
+package com.haksoftware.go4lunch.ui.colleagues;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,18 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.haksoftware.go4lunch.databinding.FragmentNotificationsBinding;
+import com.haksoftware.go4lunch.databinding.FragmentColleaguesBinding;
 
-public class NotificationsFragment extends Fragment {
+public class ColleaguesFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentColleaguesBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        ColleaguesViewModel notificationsViewModel =
+                new ViewModelProvider(this).get(ColleaguesViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentColleaguesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textNotifications;

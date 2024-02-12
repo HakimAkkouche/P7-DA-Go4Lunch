@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.haksoftware.go4lunch.databinding.FragmentDashboardBinding;
+import com.haksoftware.go4lunch.databinding.FragmentListViewBinding;
 
-public class DashboardFragment extends Fragment {
+public class RestaurantListViewFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentListViewBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        RestaurantListViewViewModel restaurantListViewViewModel =
+                new ViewModelProvider(this).get(RestaurantListViewViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentListViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        restaurantListViewViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

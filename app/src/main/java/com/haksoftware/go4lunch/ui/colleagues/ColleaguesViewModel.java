@@ -1,14 +1,14 @@
-package com.haksoftware.go4lunch.ui.notifications;
+package com.haksoftware.go4lunch.ui.colleagues;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class ColleaguesViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public ColleaguesViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }
