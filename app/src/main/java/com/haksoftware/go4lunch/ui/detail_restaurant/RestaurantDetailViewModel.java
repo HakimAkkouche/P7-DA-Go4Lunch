@@ -1,38 +1,32 @@
 package com.haksoftware.go4lunch.ui.detail_restaurant;
 
-import android.content.Context;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.haksoftware.go4lunch.model.Colleague;
 import com.haksoftware.go4lunch.model.Restaurant;
 import com.haksoftware.go4lunch.repository.UserRepository;
-import com.haksoftware.go4lunch.ui.shareddata.SharedDataMVVM;
 
+import java.util.List;
 
 public class RestaurantDetailViewModel extends ViewModel {
-    private UserRepository userRepository;
-    private Context context;
-    private MutableLiveData<LatLng> currentLocation;
-    private MutableLiveData<Boolean> isLikedRestaurant = new MutableLiveData<>();
+    private final UserRepository userRepository;
 
-    public RestaurantDetailViewModel(Context context, UserRepository userRepository) {
+    public RestaurantDetailViewModel( UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.currentLocation = SharedDataMVVM.getInstance().getCurrentLocationMutableLiveData();
-        this.context = context;
-    }
-
-    public MutableLiveData<String> getLastSelectedRestaurantDate() {
-        return userRepository.getLastSelectedRestaurantDate();
     }
 
     public MutableLiveData<Restaurant> getSelectedRestaurant() {
-        return userRepository.getSelectedRestaurant();
-    }
+        MutableLiveData<Restaurant> selectedRestaurantMLD = new MutableLiveData<>();
+        userRepository.getSelectedRestaurant(selectedRestaurantMLD::setValue);
 
+        return selectedRestaurantMLD;
+    }
+    public MutableLiveData<List<Colleague>> getRestaurantColleagues(Restaurant restaurant){
+        return userRepository.getColleaguesByRestaurant(restaurant);
+    }
     public void addLikedRestaurant(Restaurant restaurant) {
         userRepository.addLikedRestaurant(restaurant);
     }
@@ -49,9 +43,6 @@ public class RestaurantDetailViewModel extends ViewModel {
                 });
         return result;
     }
-    public MutableLiveData<Boolean> getIsLikedRestaurant() {
-        return isLikedRestaurant;
-    }
 
     public void removeLikedRestaurant(Restaurant restaurant) {
         userRepository.removeLikedRestaurant(restaurant);
@@ -59,5 +50,4 @@ public class RestaurantDetailViewModel extends ViewModel {
     public void updateSelectedRestaurant(String lastSelectedRestaurantDate, Restaurant selectedRestaurant) {
         userRepository.updateSelectedRestaurant(lastSelectedRestaurantDate, selectedRestaurant);
     }
-
 }

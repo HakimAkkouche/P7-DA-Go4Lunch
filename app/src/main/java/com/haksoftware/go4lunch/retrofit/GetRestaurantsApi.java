@@ -17,17 +17,14 @@ public interface GetRestaurantsApi {
                     "places.displayName," +
                     "places.formattedAddress," +
                     "places.nationalPhoneNumber," +
-                    "places.primaryTypeDisplayName," +
                     "places.types," +
                     "places.location," +
                     "places.rating," +
                     "places.websiteUri," +
-                    "places.takeout," +
                     "places.dineIn," +
                     "places.currentOpeningHours," +
                     "places.editorialSummary," +
-                    "places.photos," +
-                    "places.accessibilityOptions"
+                    "places.photos"
 
     })
     @POST(":searchNearby")

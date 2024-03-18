@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Go4Lunch</string>
-    <string name="title_home">Home</string>
+    <string name="title_home">Carte</string>
     <string name="title_dashboard">Liste</string>
     <string name="title_colleagues">Collègues</string>
     <string name="login">Connexion</string>
@@ -28,4 +28,17 @@
     <string name="you_are_here">Vous êtes ici</string>
     <string name="choice_not_made">ne s\'est pas encore décidé</string>
     <string name="choice_made">va manger chez </string>
+    <string name="openning_hours">Horaires :</string>
+    <string name="notifications">Activer le rappel à midi</string>
+    <string name="time_to_eat">C\'est l\'heure de manger !</string>
+    <string name="restaurant_picture">photo du restaurant</string>
+    <string name="user_name">Nom d\'utilisateur</string>
+    <string name="email">email</string>
+    <string name="restaurant_address">Adresse du restaurant</string>
+    <string name="sort_closer">Trier : plus proche</string>
+    <string name="search">Rechercher</string>
+    <string name="your_lunch">Mon déjeuner</string>
+    <string name="settings">Paramètres</string>
+    <string name="logout">Déconnexion</string>
+    <string name="logo_go4lunch">logo go4lunch</string>
 </resources>

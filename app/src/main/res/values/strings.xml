@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
-    <string name="title_home">Home</string>
+    <string name="title_home">Map view</string>
     <string name="title_dashboard">List view</string>
     <string name="title_colleagues">Colleagues</string>
     <string name="login">Connexion</string>
@@ -28,4 +28,17 @@
     <string name="you_are_here">You are here</string>
     <string name="choice_not_made"> haven\'t decided yet</string>
     <string name="choice_made"> is eating at </string>
+    <string name="openning_hours">Opening hours :</string>
+    <string name="notifications">Activate reminder at noon</string>
+    <string name="time_to_eat">It\'s time to eat !</string>
+    <string name="restaurant_picture">restaurant picture</string>
+    <string name="user_name">User name</string>
+    <string name="email">email</string>
+    <string name="restaurant_address">Restaurant\'s address</string>
+    <string name="sort_closer">Sort closer</string>
+    <string name="search">Search</string>
+    <string name="your_lunch">YOUR LUNCH</string>
+    <string name="settings">SETTINGS</string>
+    <string name="logout">LOGOUT</string>
+    <string name="logo_go4lunch">logo go4lunch</string>
 </resources>

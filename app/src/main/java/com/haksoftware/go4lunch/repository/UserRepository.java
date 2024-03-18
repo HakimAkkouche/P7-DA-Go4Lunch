@@ -1,6 +1,7 @@
 package com.haksoftware.go4lunch.repository;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -10,32 +11,33 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.haksoftware.go4lunch.model.Colleague;
 import com.haksoftware.go4lunch.model.Restaurant;
+import com.haksoftware.go4lunch.ui.restaurant_list.ColleagueRestaurantCallback;
+import com.haksoftware.go4lunch.utils.RestaurantSelectedCallback;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserRepository {
 
     private static final String  COLLECTION_NAME = "colleagues";
     private static final String USER_LIKED_RESTAURANT_COLLECTION = "liked_restaurant_list";
     private static final String USER_LIKED_RESTAURANT_ID = "restaurantId";
-
-    private String USER_LAST_DATE_SELECTED = "lastSelectedRestaurantDate";
-
-    private String USER_LAST_REST_SELECTED = "selectedRestaurant";
-    private static final String USERNAME_FIELD = "username";
-    private MutableLiveData<List<Restaurant>> restaurantLikedListMLD = new MutableLiveData<>();
-    private MutableLiveData<List<Colleague>> colleagueList = new MutableLiveData<>();
-
+    private final MutableLiveData<List<Colleague>> colleagueList = new MutableLiveData<>();
     private static volatile UserRepository instance;
-
     private UserRepository() { }
 
     public static UserRepository getInstance(){
@@ -61,12 +63,11 @@ public class UserRepository {
             String name = user.getDisplayName();
             String email = user.getEmail();
 
-            Colleague colleagueToCreate = new Colleague(uid, name, email, urlPicture);
+            Colleague colleagueToCreate = new Colleague(uid, name, email, urlPicture, false);
             Task<DocumentSnapshot> userData = getColleagueData();
             // If the user already exist in Firestore, we get his data (isMentor)
-            userData.addOnSuccessListener(documentSnapshot -> {
-                this.getColleaguesCollection().document(uid).set(colleagueToCreate);
-            });
+            userData.addOnSuccessListener(documentSnapshot ->
+                this.getColleaguesCollection().document(uid).set(colleagueToCreate));
         }
     }
     public String getCurrentColleagueID() {
@@ -87,11 +88,11 @@ public class UserRepository {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public Task<Void> signOut(Context context){
-        return AuthUI.getInstance().signOut(context);
+    public void signOut(Context context){
+        AuthUI.getInstance().signOut(context);
     }
 
-    public MutableLiveData<List<Colleague>> getAllWColleagues() {
+    public MutableLiveData<List<Colleague>> getAllColleagues() {
         getColleaguesCollection()
                 .whereNotEqualTo("colleagueId", getCurrentColleagueID())
                 .get()
@@ -110,30 +111,62 @@ public class UserRepository {
         return colleagueList;
 
     }
-    public void updateSelectedRestaurant(String lastSelectedRestaurantDate, Restaurant selectedRestaurant) {
-        getColleaguesCollection().document(getCurrentColleagueID()).update(USER_LAST_DATE_SELECTED, lastSelectedRestaurantDate);
-        getColleaguesCollection().document(getCurrentColleagueID()).update(USER_LAST_REST_SELECTED, selectedRestaurant);
+    public MutableLiveData<List<Colleague>> getColleaguesByRestaurant(Restaurant restaurant) {
 
-    }
-    public MutableLiveData<String> getLastSelectedRestaurantDate() {
-        String uid = getCurrentColleagueID();
-        MutableLiveData<String> lastSelectedRestaurantDateLiveData = new MutableLiveData<>();
-
-        if (uid != null) {
-            getColleaguesCollection().document(uid).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Colleague colleague = task.getResult().toObject(Colleague.class);
-                    if (colleague != null) {
-                        lastSelectedRestaurantDateLiveData.setValue(colleague.getLastSelectedRestaurantDate());
+        getColleaguesCollection()
+                .whereNotEqualTo("colleagueId", getCurrentColleagueID())
+                .whereEqualTo("lastSelectedRestaurantDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<Colleague> colleagues = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Colleague colleague = document.toObject(Colleague.class);
+                            if(Objects.requireNonNull(colleague.getSelectedRestaurant()).getRestaurantId().equals(restaurant.getRestaurantId())) {
+                                colleagues.add(colleague);
+                            }
+                        }
+                        colleagueList.setValue(colleagues);
+                    } else {
+                        Log.d("Error", "Error getting documents: ", task.getException());
                     }
-                }
-            });
-        }
+                })
+                .addOnFailureListener(e -> colleagueList.postValue(null));
+        return colleagueList;
 
-        return lastSelectedRestaurantDateLiveData;
     }
+    public void getColleaguesCount(Restaurant restaurant, ColleagueRestaurantCallback callback) {
 
-    public MutableLiveData<Restaurant> getSelectedRestaurant() {
+        getColleaguesCollection()
+                .whereNotEqualTo("colleagueId", getCurrentColleagueID())
+                .whereEqualTo("lastSelectedRestaurantDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<Colleague> colleagues = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Colleague colleague = document.toObject(Colleague.class);
+                            if (colleague.getSelectedRestaurant() != null) {
+                                if (colleague.getSelectedRestaurant().getRestaurantId().equals(restaurant.getRestaurantId())) {
+                                    colleagues.add(colleague);
+                                }
+                            }
+                        }
+                        colleagueList.setValue(colleagues);
+                        callback.onColleaguesReceived(colleagues.size());
+                    } else {
+                        Log.d("Error", "Error getting documents: ", task.getException());
+                        callback.onColleaguesError("Error getting documents: " + task.getException());
+                    }
+                })
+                .addOnFailureListener(e -> colleagueList.postValue(null));
+    }
+    public void updateSelectedRestaurant(String lastSelectedRestaurantDate, Restaurant selectedRestaurant) {
+        getColleaguesCollection().document(getCurrentColleagueID()).update("lastSelectedRestaurantDate", lastSelectedRestaurantDate);
+        getColleaguesCollection().document(getCurrentColleagueID()).update("selectedRestaurant", selectedRestaurant);
+
+    }
+    public void getSelectedRestaurant(RestaurantSelectedCallback callback) {
         String uid = getCurrentColleagueID();
         MutableLiveData<Restaurant> selectedRestaurantLiveData = new MutableLiveData<>();
 
@@ -142,13 +175,20 @@ public class UserRepository {
                 if (task.isSuccessful()) {
                     Colleague colleague = task.getResult().toObject(Colleague.class);
                     if (colleague != null) {
-                        selectedRestaurantLiveData.setValue(colleague.getSelectedRestaurant());
+                        if(colleague.getLastSelectedRestaurantDate() != null) {
+                            if (colleague.getLastSelectedRestaurantDate()
+                                    .equals(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))) {
+                                selectedRestaurantLiveData.setValue(colleague.getSelectedRestaurant());
+                            }
+                        }
+                        else {
+                            selectedRestaurantLiveData.setValue(null);
+                        }
+                        callback.onRestaurantSelected(selectedRestaurantLiveData.getValue());
                     }
                 }
             });
         }
-
-        return selectedRestaurantLiveData;
     }
 
     public void addLikedRestaurant(Restaurant restaurant) {
@@ -187,6 +227,50 @@ public class UserRepository {
                             Log.e("RemoveLikedRestaurant", "Document not found or error: " + task.getException());
                         }
                     });
+        }
+    }
+    public UploadTask uploadImage(Uri imageUri) {
+
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(getCurrentColleagueID() + "_profile.jpg");
+        return imageRef.putFile(imageUri);
+    }
+
+    public void setNewUrlPicture(Uri profileImageUri) {
+        FirebaseUser user = getCurrentUser();
+        if(user != null){
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setPhotoUri(Uri.parse(profileImageUri.toString()))
+                    .build();
+
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d("Info", "User profile updated.");
+                        }
+                    });
+        }
+    }
+    public MutableLiveData<Boolean> getWantsNotification(){
+        String uid = getCurrentColleagueID();
+        MutableLiveData<Boolean> wantsNotificationMLD = new MutableLiveData<>();
+
+        if (uid != null) {
+            getColleaguesCollection().document(uid).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Colleague colleague = task.getResult().toObject(Colleague.class);
+                    if (colleague != null) {
+                        wantsNotificationMLD.setValue(colleague.getWantsNotification());
+                    }
+                }
+            });
+        }
+        return wantsNotificationMLD;
+    }
+    public void setWantsNotification(boolean wantsNotification) {
+        FirebaseUser user = getCurrentUser();
+        if(user != null){
+            getColleaguesCollection().document(user.getUid()).update("wantsNotification", wantsNotification);
         }
     }
 }

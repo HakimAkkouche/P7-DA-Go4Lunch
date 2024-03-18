@@ -1,28 +1,29 @@
 package com.haksoftware.go4lunch.ui.restaurant_list;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Objects;
 
 public class RestaurantViewState {
-    private String restaurantId;
-    private String name;
+    private final String restaurantId;
+    private final String name;
     @Nullable
-    private String phoneNumber;
-    private float rating;
+    private final String phoneNumber;
+    private final float rating;
     @Nullable
-    private String type;
+    private final String type;
     @Nullable
-    private String urlPicture;
-    private String address;
-    private String openingHours;
-    private String editorialSummary;
-
-    private LatLng latLng;
-    private int distance;
-    private int colleaguesCount;
+    private final String urlPicture;
+    private final String address;
+    private final String openingHours;
+    private final String editorialSummary;
+    private final String urlWebsite;
+    private final LatLng latLng;
+    private final MutableLiveData<String> distance = new MutableLiveData<>();
+    private final MutableLiveData<String> colleaguesCount = new MutableLiveData<>();
 
     public RestaurantViewState(String restaurantId,
                                String name,
@@ -33,9 +34,9 @@ public class RestaurantViewState {
                                String address,
                                String openingHours,
                                String editorialSummary,
+                               String urlWebsite,
                                LatLng latLng,
-                               int distance,
-                               int colleaguesCount) {
+                               String colleaguesCount) {
         this.restaurantId = restaurantId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -45,9 +46,9 @@ public class RestaurantViewState {
         this.address = address;
         this.openingHours = openingHours;
         this.editorialSummary = editorialSummary;
+        this.urlWebsite = urlWebsite;
         this.latLng = latLng;
-        this.distance= distance;
-        this.colleaguesCount = colleaguesCount;
+        this.colleaguesCount.setValue(colleaguesCount);
     }
 
     public String getRestaurantId() {
@@ -89,16 +90,26 @@ public class RestaurantViewState {
         return editorialSummary;
     }
 
+    public String getUrlWebsite() {
+        return urlWebsite;
+    }
+
     public LatLng getLatLng() {
         return latLng;
     }
 
-    public int getDistance() {
+    public MutableLiveData<String> getDistance() {
         return distance;
     }
 
-    public int getColleaguesCount() {
-        return colleaguesCount;
+    public void setDistance(String distance) {
+        this.distance.postValue(distance);
+    }
+    public void setColleaguesCount(String colleaguesCount) {
+        this.colleaguesCount.postValue(colleaguesCount);
+    }
+    public String getColleaguesCount() {
+        return colleaguesCount.getValue();
     }
 
     @Override

@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.material.snackbar.Snackbar;
 import com.haksoftware.go4lunch.databinding.ActivityLoginBinding;
 import com.haksoftware.go4lunch.repository.UserRepository;
 
@@ -19,9 +20,7 @@ import java.util.List;
 
 public class LoginActivity  extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
-    private ActivityLoginBinding binding;
-
-    private UserRepository userRepository = UserRepository.getInstance();
+    private final UserRepository userRepository = UserRepository.getInstance();
 
     /**
      * {@inheritDoc}
@@ -34,7 +33,7 @@ public class LoginActivity  extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        com.haksoftware.go4lunch.databinding.ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         if(userRepository.getCurrentUser() != null) {
             launchActivityConnected();
@@ -50,6 +49,10 @@ public class LoginActivity  extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
     }
+    private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> handleResponseAfterSignIn(RC_SIGN_IN, result.getResultCode(), result.getData())
+    );
 
     private void startSignInActivity(){
 
@@ -58,20 +61,15 @@ public class LoginActivity  extends AppCompatActivity {
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
                 new AuthUI.IdpConfig.EmailBuilder().build());
 
-        // Launch the activity
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setTheme(R.style.LoginTheme)
-                        .setAvailableProviders(providers)
-                        .setIsSmartLockEnabled(false, true)
-                        .setLogo(R.mipmap.logo)
-                        .build(),
-                RC_SIGN_IN);
-    }
-    // Show Snack Bar with a message
-    private void showSnackBar( String message){
-        Snackbar.make(this.getCurrentFocus(), message, Snackbar.LENGTH_SHORT).show();
+        Intent signInIntent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setTheme(R.style.LoginTheme)
+                .setAvailableProviders(providers)
+                .setIsSmartLockEnabled(false, true)
+                .setLogo(R.mipmap.logo)
+                .build();
+
+        signInLauncher.launch(signInIntent);
     }
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data){
 
@@ -86,6 +84,7 @@ public class LoginActivity  extends AppCompatActivity {
                 // ERRORS
                 if (response == null) {
                     Toast.makeText(this, getString(R.string.error_authentication_canceled), Toast.LENGTH_SHORT).show();
+                    finish();
                 } else if (response.getError()!= null) {
                     if(response.getError().getErrorCode() == ErrorCodes.NO_NETWORK){
                         Toast.makeText(this, getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
@@ -99,6 +98,7 @@ public class LoginActivity  extends AppCompatActivity {
     private void launchActivityConnected(){
         Toast.makeText(this, getString(R.string.connection_succeed), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 }

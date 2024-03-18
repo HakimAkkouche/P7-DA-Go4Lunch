@@ -17,7 +17,7 @@
             android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/background_login"
-            />
+            android:contentDescription="@string/restaurant_picture" />
         <LinearLayout
             android:id="@+id/name_address_container"
             android:layout_width="match_parent"
@@ -28,24 +28,26 @@
             android:orientation="vertical"
             android:padding="12dp"
             >
+
             <TextView
                 android:id="@+id/name_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/name_restaurant_textview"
                 android:textColor="@color/white"
-                />
+                tools:ignore="TextContrastCheck" />
+
             <TextView
                 android:id="@+id/address_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Restaurant's address"
+                android:text="@string/restaurant_address"
                 android:textColor="@color/white"
-                />
+                tools:ignore="TextContrastCheck" />
 
         </LinearLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contact_infos_layout"
+            android:id="@+id/contact_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name_address_container"
@@ -79,7 +81,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:layout_centerInParent="true">
+                            android:layout_centerInParent="true"
+                            tools:ignore="UseCompoundDrawables,UselessParent">
                             <ImageView
                                 android:id="@+id/phone_number_imgview"
                                 android:layout_width="wrap_content"
@@ -88,7 +91,7 @@
                                 android:minHeight="24dp"
                                 android:minWidth="24dp"
                                 android:src="@drawable/ic_phone"
-                                />
+                                android:contentDescription="@string/call_textview" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -114,7 +117,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:layout_centerInParent="true">
+                            android:layout_centerInParent="true"
+                            tools:ignore="UseCompoundDrawables,UselessParent">
                             <ImageView
                                 android:id="@+id/liked_imgview"
                                 android:layout_width="wrap_content"
@@ -123,7 +127,7 @@
                                 android:minHeight="24dp"
                                 android:minWidth="24dp"
                                 android:src="@drawable/ic_favorite_star_24"
-                                />
+                                android:contentDescription="@string/like_textview" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -149,7 +153,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:layout_centerInParent="true">
+                            android:layout_centerInParent="true"
+                            tools:ignore="UseCompoundDrawables,UselessParent">
                             <ImageView
                                 android:id="@+id/website_imgview"
                                 android:layout_width="wrap_content"
@@ -158,7 +163,7 @@
                                 android:minHeight="24dp"
                                 android:minWidth="24dp"
                                 android:src="@drawable/ic_website"
-                                />
+                                android:contentDescription="@string/website_textview" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -172,16 +177,23 @@
                 </androidx.cardview.widget.CardView>
             </GridLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/colleagues_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/colleague_item_list"
+            android:layout_below="@id/contact_info_layout"/>
     </RelativeLayout>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/is_today_chosen_rest_floating_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            app:layout_anchor="@+id/image_restaurant"
-            app:layout_anchorGravity="end|bottom"
-            android:contentDescription="@string/favorite"
-            app:backgroundTint="@color/colorPrimary"
-            app:srcCompat="@drawable/ic_selected_restaurant"
-            tools:ignore="RelativeOverlap" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/is_today_chosen_rest_floating_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        app:layout_anchor="@+id/image_restaurant"
+        app:layout_anchorGravity="end|bottom"
+        android:contentDescription="@string/favorite"
+        app:backgroundTint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_selected_restaurant"
+        tools:ignore="RelativeOverlap" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

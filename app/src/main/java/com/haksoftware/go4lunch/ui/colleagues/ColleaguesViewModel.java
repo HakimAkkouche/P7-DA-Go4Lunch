@@ -10,13 +10,13 @@ import java.util.List;
 
 public class ColleaguesViewModel extends ViewModel {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public ColleaguesViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     public MutableLiveData<List<Colleague>> getColleagues(){
-        return userRepository.getAllWColleagues();
+        return userRepository.getAllColleagues();
     }
 }

@@ -13,26 +13,51 @@
         <action
             android:id="@+id/action_MapFragment_to_RestaurantDetailFragment"
             app:destination="@+id/RestaurantDetailFragment"/>
+        <action
+            android:id="@+id/action_MapFragment_to_SettingsFragment"
+            app:destination="@+id/SettingsFragment"/>
     </fragment>
     <fragment
         android:id="@+id/RestaurantDetailFragment"
         android:name="com.haksoftware.go4lunch.ui.detail_restaurant.RestaurantDetailFragment"
         android:label="@string/toolbar_title_home"
         tools:layout="@layout/fragment_restaurant_detail" >
+    </fragment>
+    <fragment
+        android:id="@+id/SettingsFragment"
+        android:name="com.haksoftware.go4lunch.ui.settings.SettingsFragment"
+        android:label="@string/toolbar_title_home"
+        tools:layout="@layout/fragment_settings" >
+    </fragment>
+    <fragment
+        android:id="@+id/restaurants_fragment"
+        android:name="com.haksoftware.go4lunch.ui.restaurant_list.RestaurantsFragment"
+        android:label="@string/toolbar_title_home"
+        tools:layout="@layout/fragment_restaurants">
         <action
-            android:id="@+id/action_RestaurantDetailFragment_to_MapFragment"
-            app:destination="@+id/MapFragment"/>
+            android:id="@+id/action_RestaurantsFragment_to_RestaurantDetailFragment"
+            app:destination="@+id/RestaurantDetailFragment"/>
+        <action
+            android:id="@+id/action_MapFragment_to_RestaurantDetailFragment"
+            app:destination="@+id/RestaurantDetailFragment"/>
+        <action
+            android:id="@+id/action_MapFragment_to_SettingsFragment"
+            app:destination="@+id/SettingsFragment"/>
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.haksoftware.go4lunch.ui.restaurant_list.RestaurantListViewFragment"
-        android:label="@string/toolbar_title_home"
-        tools:layout="@layout/fragment_restaurant_list" />
-
-    <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/colleagues_fragment"
         android:name="com.haksoftware.go4lunch.ui.colleagues.ColleaguesFragment"
         android:label="@string/title_colleagues"
-        tools:layout="@layout/fragment_colleagues" />
+        tools:layout="@layout/fragment_colleagues" >
+        <action
+            android:id="@+id/action_ColleaguesFragment_to_RestaurantDetailFragment"
+            app:destination="@+id/RestaurantDetailFragment"/>
+        <action
+            android:id="@+id/action_MapFragment_to_RestaurantDetailFragment"
+            app:destination="@+id/RestaurantDetailFragment"/>
+        <action
+            android:id="@+id/action_MapFragment_to_SettingsFragment"
+            app:destination="@+id/SettingsFragment"/>
+    </fragment>
 </navigation>

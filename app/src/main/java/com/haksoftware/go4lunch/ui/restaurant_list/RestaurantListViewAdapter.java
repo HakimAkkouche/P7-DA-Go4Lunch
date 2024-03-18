@@ -1,6 +1,8 @@
 package com.haksoftware.go4lunch.ui.restaurant_list;
 
-import android.content.Context;
+import static com.haksoftware.go4lunch.utils.Utils.createRestaurantFromViewState;
+
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.haksoftware.go4lunch.R;
 import com.haksoftware.go4lunch.databinding.RestaurantItemListBinding;
 import com.haksoftware.go4lunch.utils.PlacesApiHelper;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -29,14 +36,12 @@ public class RestaurantListViewAdapter extends ListAdapter<RestaurantViewState, 
         super(new DiffUtil.ItemCallback<RestaurantViewState>() {
             @Override
             public boolean areItemsTheSame(@NonNull RestaurantViewState oldItem, @NonNull RestaurantViewState newItem) {
-                boolean result = oldItem.getRestaurantId().equals(newItem.getRestaurantId());
-                return result;
+                return oldItem.getRestaurantId().equals(newItem.getRestaurantId());
             }
 
             @Override
             public boolean areContentsTheSame(@NonNull RestaurantViewState oldItem, @NonNull RestaurantViewState newItem) {
-                boolean result = oldItem.equals(newItem);
-                return result;
+                return oldItem.equals(newItem);
             }
         });
     }
@@ -81,7 +86,7 @@ public class RestaurantListViewAdapter extends ListAdapter<RestaurantViewState, 
      * on (e.g. in a click listener), use {@link RestaurantViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
      * <p>
-     * Override {@link #onBindViewHolder(RestaurantViewHolder, int)} instead if Adapter can
+     * Override #onBindViewHolder(RestaurantViewHolder, int) instead if Adapter can
      * handle efficient partial bind.
      *
      * @param holder   The ViewHolder which should be updated to represent the contents of the
@@ -103,25 +108,26 @@ public class RestaurantListViewAdapter extends ListAdapter<RestaurantViewState, 
         public void bind(@NonNull RestaurantViewState restaurant) {
             binding.restaurantNameTv.setText(restaurant.getName());
             binding.addressTv.setText(restaurant.getAddress());
-            binding.distanceTv.setText(String.valueOf(restaurant.getDistance()));
-            binding.colleaguesCountTv.setText(String.valueOf(restaurant.getColleaguesCount()));
-            binding.openingTimeTv.setText("close at 14");
-            binding.rating.setRating(restaurant.getRating());
+            binding.distanceTv.setText(String.valueOf(restaurant.getDistance().getValue()));
+            binding.colleaguesCountTv.setText(restaurant.getColleaguesCount());
+            binding.openingTimeTv.setText(restaurant.getOpeningHours());
+            binding.rating.setRating(restaurant.getRating()*3/5);
             Call<ResponseBody> call = PlacesApiHelper.getRestaurantPhoto(restaurant.getUrlPicture(), 400, 400);
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         try {
-                            byte[] imageBytes = response.body().bytes();
+                            if(response.body() != null) {
+                                byte[] imageBytes = response.body().bytes();
 
-                            Glide.with(binding.getRoot())
-                                    .load(imageBytes).centerCrop()
-                                    .into(binding.photImgv);
-                            // Faites quelque chose avec les données binaires de l'image (par exemple, enregistrez-les dans un fichier)
+                                Glide.with(binding.getRoot())
+                                        .load(imageBytes).centerCrop()
+                                        .into(binding.photImgv);
+                            }
                         } catch (IOException e) {
-                            Log.e("Erreur", "Onfailure" + call.request().url() + " " + call.request().body().toString());
+                            Log.e("Erreur", "Onfailure" + call.request().url() + " " + Objects.requireNonNull(call.request().body()));
                             e.printStackTrace();
                         }
                     } else {
@@ -130,9 +136,23 @@ public class RestaurantListViewAdapter extends ListAdapter<RestaurantViewState, 
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Log.e("Erreur", "Onfailure" + call.request().url() + " " + call.request().body().toString());
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    Log.e("Erreur", "Onfailure" + call.request().url() + " " + Objects.requireNonNull(call.request().body()));
                     t.printStackTrace();
+                }
+            });
+            binding.detailLayout.setOnClickListener(view -> {
+                Bundle bundle = new Bundle();
+
+                bundle.putParcelable("selectedRestaurant", createRestaurantFromViewState(restaurant));
+                if (view.getContext() instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
+
+                    // Utilisez le NavController à partir de l'Activity
+                    NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_activity_main);
+
+                    // Naviguez vers la destination souhaitée
+                    navController.navigate(R.id.action_RestaurantsFragment_to_RestaurantDetailFragment, bundle);
                 }
             });
         }

@@ -3,7 +3,6 @@ package com.haksoftware.go4lunch.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -14,19 +13,19 @@ public class Restaurant implements Parcelable {
 
     private String restaurantId;
     private String name;
+    private String address;
     @Nullable
     private String phoneNumber;
-    private float rating;
     @Nullable
     private String type;
-    @Nullable
-    private String urlPicture;
-    private String address;
-    private String openingHours;
-    private String editorialSummary;
-    private String urlWebsite;
+    private float rating;
     private double latitude;
     private double longitude;
+    private String urlWebsite;
+    private String openingHours;
+    private String editorialSummary;
+    @Nullable
+    private String urlPicture;
 
     // Constructeur sans argument nécessaire pour la désérialisation Firebase
     public Restaurant() {
@@ -55,21 +54,7 @@ public class Restaurant implements Parcelable {
         this.latitude = latLng.latitude;
         this.longitude = latLng.longitude;
     }
-    // Parcelable implementation
-    protected Restaurant(Parcel in) {
-        restaurantId = in.readString();
-        name = in.readString();
-        phoneNumber = in.readString();
-        rating = in.readFloat();
-        type = in.readString();
-        urlPicture = in.readString();
-        address = in.readString();
-        openingHours = in.readString();
-        editorialSummary = in.readString();
-        urlWebsite = in.readString();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
-    }
+
 
     public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
         @Override
@@ -87,7 +72,21 @@ public class Restaurant implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
+    // Parcelable implementation
+    protected Restaurant(Parcel in) {
+        restaurantId = in.readString();
+        name = in.readString();
+        phoneNumber = in.readString();
+        rating = in.readFloat();
+        type = in.readString();
+        urlPicture = in.readString();
+        address = in.readString();
+        openingHours = in.readString();
+        editorialSummary = in.readString();
+        urlWebsite = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(restaurantId);
@@ -98,6 +97,7 @@ public class Restaurant implements Parcelable {
         dest.writeString(urlPicture);
         dest.writeString(address);
         dest.writeString(openingHours);
+        dest.writeString(editorialSummary);
         dest.writeString(urlWebsite);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
@@ -151,6 +151,15 @@ public class Restaurant implements Parcelable {
     public LatLng getLatLng() {
         return new LatLng(latitude, longitude);
     }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     //endregion
 
 
