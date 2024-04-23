@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/colleague_item"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <ImageView
+        android:id="@+id/colleague_avatar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_user_profile_thumbnail"
+        android:layout_margin="10dp"
+        android:contentDescription="@string/profile_image" />
+
+    <TextView
+        android:id="@+id/name_colleague"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toEndOf="@id/colleague_avatar"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/light_grey"
+        tools:text="User is eating  at (restaurant)" />
+
+</RelativeLayout>

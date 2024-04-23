@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <RelativeLayout
+        android:id="@+id/detail_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/phot_imgv">
+        <TextView
+            android:id="@+id/restaurant_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:layout_marginStart="2dp"
+            android:layout_toStartOf="@id/distance_tv"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Restaurant"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/distance_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:layout_marginStart="10dp"
+            tools:text="10km"
+            android:textStyle="italic"
+            />
+        <TextView
+            android:id="@+id/address_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/restaurant_name_tv"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/rating"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            tools:text="10 avenue du général Leclerc "
+            />
+        <TextView
+            android:id="@+id/colleagues_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/distance_tv"
+            android:layout_alignParentEnd="true"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:gravity="center"
+            tools:text="(5)"
+            />
+
+        <TextView
+            android:id="@+id/opening_time_tv"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/address_tv"
+            android:textSize="12sp"
+            android:padding="5dp"
+            android:layout_marginStart="2dp"
+            tools:text="open until 2pm "
+            />
+
+        <RatingBar
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="3"
+            android:progressTint="#DCAB1B"
+            tools:rating="2.5"
+            android:stepSize="0.5"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_below="@id/colleagues_count_tv"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/phot_imgv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/restaurant_picture"
+        android:src="@mipmap/background_login"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>

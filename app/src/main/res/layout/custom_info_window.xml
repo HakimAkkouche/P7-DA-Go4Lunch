@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/custom_info_bubble"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        tools:text="Restaurant name"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="#ff000000"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <RatingBar
+        android:id="@+id/info_rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="3"
+        android:progressTint="#DCAB1B"
+        tools:rating="2.5"
+        android:stepSize="0.5"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:id="@+id/snippet_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="false"
+        android:textColor="#ff7f7f7f"
+        android:textSize="14sp" />
+</LinearLayout>
