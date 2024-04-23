@@ -41,12 +41,12 @@ Le projet : le but de ce projet est de réaliser une application Android en dév
 
 fonctionnalités :
 
-	1 : Gestion des utilisateurs à l'aide de Firebase.
-	2 : Affichage d'un Carte avec les restaurants aux alentours
-    3 : Affichage sous forme de liste les restaurants aux alentours
-	4 : Affichage de la liste des collègues avec leur choix de restaurants
-	5 : Afficehr les détails du restaurant avec la note et la distance
-	6 : Avoir le choix de recevoir une notification de rappel à midi
+	Gestion des utilisateurs à l'aide de Firebase.
+	Affichage d'un Carte avec les restaurants aux alentours
+    Affichage sous forme de liste les restaurants aux alentours
+	Affichage de la liste des collègues avec leur choix de restaurants
+	Afficehr les détails du restaurant avec la note et la distance
+	Avoir le choix de recevoir une notification de rappel à midi
 
 
 Captures d'écran

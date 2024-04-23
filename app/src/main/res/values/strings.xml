@@ -1,6 +1,47 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Map view</string>
+    <string name="title_dashboard">List view</string>
+    <string name="title_colleagues">Colleagues</string>
+    <string name="login">Connexion</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- MAIN ACTIVITY -->
+    <string name="error_not_connected">You are not logged in !</string>
+    <string name="error_authentication_canceled">Authentication cancelled&#8230;</string>
+    <string name="error_no_internet">No network connection !</string>
+    <string name="error_unknown_error">An error occurred&#8230;</string>
+    <string name="connection_succeed">Authentication success !</string>
+    <string name="button_login_text_logged">Show my profile</string>
+    <string name="button_login_text_not_logged">Login</string>
+    <string name="toolbar_title_home">I\'m Hungry!</string>
+    <string name="popup_title_permission_files_access">This application needs authorization to work properly.</string>
+    <string name="profile_image">Profile image</string>
+    <string name="open_nav">open_nav</string>
+    <string name="close_nav">close_nav</string>
+    <string name="name_restaurant_textview">Restaurant name</string>
+    <string name="favorite">Favorite</string>
+    <string name="website_textview">WEBSITE</string>
+    <string name="like_textview">LIKE</string>
+    <string name="call_textview">CALL</string>
+    <string name="summary_not_available">Summary not available</string>
+    <string name="choice_not_made"> haven\'t decided yet</string>
+    <string name="choice_made"> is eating at </string>
+    <string name="opening_hours">Opening hours :</string>
+    <string name="notifications">Activate reminder at noon</string>
+    <string name="time_to_eat">It\'s time to eat !</string>
+    <string name="restaurant_picture">restaurant picture</string>
+    <string name="user_name">User name</string>
+    <string name="email">email</string>
+    <string name="restaurant_address">Restaurant\'s address</string>
+    <string name="sort_closer">Sort closer</string>
+    <string name="search">Search</string>
+    <string name="your_lunch">YOUR LUNCH</string>
+    <string name="settings">SETTINGS</string>
+    <string name="logout">LOGOUT</string>
+    <string name="logo_go4lunch">logo go4lunch</string>
+    <string name="permissions">Add permissions</string>
+    <string name="permission_message">Please grant location permission to continue</string>
+    <string name="request_permission">Request Permission</string>
+
 </resources>
