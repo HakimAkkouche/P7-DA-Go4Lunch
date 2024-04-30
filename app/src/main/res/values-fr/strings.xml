@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="title_home">Carte</string>
+    <string name="title_dashboard">Liste</string>
+    <string name="title_colleagues">Collègues</string>
+    <string name="login">Connexion</string>
+
+    <!-- MAIN ACTIVITY -->
+    <string name="error_not_connected">Vous devez vous connecter !</string>
+    <string name="error_authentication_canceled">Authentification annulée&#8230;</string>
+    <string name="error_no_internet">Aucune connexion internet !</string>
+    <string name="error_unknown_error">Une erreur inconnue s\'est produite&#8230;</string>
+    <string name="connection_succeed">Authentification réussie !</string>
+    <string name="button_login_text_logged">Afficher le profil</string>
+    <string name="button_login_text_not_logged">Connexion</string>
+    <string name="toolbar_title_home">J\'ai faim !</string>
+    <string name="popup_title_permission_files_access">Cette application a besoin de permission pour fonctionner.</string>
+    <string name="profile_image">Image du profil</string>
+    <string name="open_nav">open_nav</string>
+    <string name="close_nav">close_nav</string>
+    <string name="name_restaurant_textview">Nom du restaurant</string>
+    <string name="favorite">Favoris</string>
+    <string name="website_textview">SITE WEB</string>
+    <string name="like_textview">J\'AIME</string>
+    <string name="call_textview">APPELER</string>
+    <string name="summary_not_available">Aucune description disponible</string>
+    <string name="choice_not_made">ne s\'est pas encore décidé</string>
+    <string name="choice_made">va manger chez </string>
+    <string name="opening_hours">Horaires :</string>
+    <string name="notifications">Activer le rappel à midi</string>
+    <string name="time_to_eat">C\'est l\'heure de manger chez</string>
+    <string name="participant">Participant(s) :</string>
+    <string name="restaurant_picture">photo du restaurant</string>
+    <string name="user_name">Nom d\'utilisateur</string>
+    <string name="email">email</string>
+    <string name="restaurant_address">Adresse du restaurant</string>
+    <string name="sort_closer">Trier : plus proche</string>
+    <string name="search">Rechercher</string>
+    <string name="your_lunch">Mon déjeuner</string>
+    <string name="settings">Paramètres</string>
+    <string name="logout">Déconnexion</string>
+    <string name="logo_go4lunch">logo go4lunch</string>
+    <string name="permissions">Ajouter la permission</string>
+    <string name="permission_message">Ajoutez les permissions pour continuer</string>
+    <string name="request_permission">Demande de permission</string>
+</resources>
