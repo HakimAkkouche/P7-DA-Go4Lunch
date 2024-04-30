@@ -8,7 +8,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.haksoftware.go4lunch.repository.GmapRepository;
 import com.haksoftware.go4lunch.repository.FirebaseRepository;
+import com.haksoftware.go4lunch.ui.colleagues.ColleaguesViewModel;
+import com.haksoftware.go4lunch.ui.detail_restaurant.RestaurantDetailViewModel;
 import com.haksoftware.go4lunch.ui.map.MapViewModel;
+import com.haksoftware.go4lunch.ui.settings.SettingsViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -39,20 +42,17 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if (modelClass.isAssignableFrom(MapViewModel.class)) {
-            return (T) new MapViewModel(application,firebaseRepository);
-        }/*
-        else if (modelClass.isAssignableFrom(RestaurantDetailViewModel.class)) {
-            return (T) new RestaurantDetailViewModel(firebaseRepository);
-        }
-        else if (modelClass.isAssignableFrom(RestaurantListViewModel.class)) {
-            return (T) new RestaurantListViewModel(firebaseRepository, gmapRepository);
+            return (T) new MapViewModel(application,firebaseRepository, gmapRepository);
         }
         else if (modelClass.isAssignableFrom(ColleaguesViewModel.class)) {
             return (T) new ColleaguesViewModel(firebaseRepository);
         }
+        else if (modelClass.isAssignableFrom(RestaurantDetailViewModel.class)) {
+            return (T) new RestaurantDetailViewModel(firebaseRepository);
+        }
         else if (modelClass.isAssignableFrom(SettingsViewModel.class)) {
             return (T) new SettingsViewModel(application, firebaseRepository);
-        }*/
+        }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
 }

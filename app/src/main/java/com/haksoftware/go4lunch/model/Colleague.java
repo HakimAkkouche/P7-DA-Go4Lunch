@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import java.util.Objects;
 
 public class Colleague {
-    private String colleagueId;
     private String userName;
     private String email;
 
@@ -13,14 +12,13 @@ public class Colleague {
     @Nullable
     private String lastSelectedRestaurantDate;
     @Nullable
-    private String selectedRestaurant;
+    private Restaurant selectedRestaurant;
 
     private Boolean wantsNotification;
 
     public Colleague() { }
 
-    public Colleague(String colleagueId, String userName, String email, String urlPicture, boolean wantsNotification) {
-        this.colleagueId = colleagueId;
+    public Colleague( String userName, String email, String urlPicture, boolean wantsNotification) {
         this.userName = userName;
         this.email = email;
         this.urlPicture = urlPicture;
@@ -28,18 +26,12 @@ public class Colleague {
     }
 
     //region getters/setters
-    public String getUid() {
-        return colleagueId;
-    }
 
     public String getUserName() {
         return userName;
     }
     public String getUrlPicture() {
         return urlPicture;
-    }
-    public String getColleagueId() {
-        return colleagueId;
     }
     public String getEmail() {
         return email;
@@ -52,7 +44,7 @@ public class Colleague {
         return lastSelectedRestaurantDate;
     }
     @Nullable
-    public String getSelectedRestaurant() {
+    public Restaurant getSelectedRestaurant() {
         return selectedRestaurant;
     }
 
@@ -63,11 +55,11 @@ public class Colleague {
         if (this == o) return true;
         if (!(o instanceof Colleague)) return false;
         Colleague colleague = (Colleague) o;
-        return Objects.equals(colleagueId, colleague.colleagueId) && Objects.equals(userName, colleague.userName) && Objects.equals(email, colleague.email) && Objects.equals(urlPicture, colleague.urlPicture) && Objects.equals(lastSelectedRestaurantDate, colleague.lastSelectedRestaurantDate) && Objects.equals(selectedRestaurant, colleague.selectedRestaurant) && Objects.equals(wantsNotification, colleague.wantsNotification);
+        return Objects.equals(userName, colleague.userName) && Objects.equals(email, colleague.email) && Objects.equals(urlPicture, colleague.urlPicture) && Objects.equals(lastSelectedRestaurantDate, colleague.lastSelectedRestaurantDate) && Objects.equals(selectedRestaurant, colleague.selectedRestaurant) && Objects.equals(wantsNotification, colleague.wantsNotification);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(colleagueId, userName, email, urlPicture, lastSelectedRestaurantDate, selectedRestaurant, wantsNotification);
+        return Objects.hash(userName, email, urlPicture, lastSelectedRestaurantDate, selectedRestaurant, wantsNotification);
     }
 }

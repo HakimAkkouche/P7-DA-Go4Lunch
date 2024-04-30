@@ -21,6 +21,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.haksoftware.go4lunch.model.Colleague;
 import com.haksoftware.go4lunch.model.Restaurant;
+import com.haksoftware.go4lunch.model.LikedRestaurant;
+import com.haksoftware.go4lunch.ui.detail_restaurant.LikedRestaurantCallback;
+import com.haksoftware.go4lunch.ui.restaurant_list.ColleagueRestaurantCallback;
+import com.haksoftware.go4lunch.utils.RestaurantSelectedCallback;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,9 +64,9 @@ public class FirebaseRepository {
             String name = user.getDisplayName();
             String email = user.getEmail();
 
-            Colleague colleagueToCreate = new Colleague(uid, name, email, urlPicture, false);
+            Colleague colleagueToCreate = new Colleague( name, email, urlPicture, false);
             Task<DocumentSnapshot> userData = getColleagueData();
-            // If the user already exist in Firestore, we get his data (isMentor)
+
             userData.addOnSuccessListener(documentSnapshot ->
                 this.getColleaguesCollection().document(uid).set(colleagueToCreate));
         }
@@ -108,19 +112,17 @@ public class FirebaseRepository {
         return colleagueList;
 
     }
-    public MutableLiveData<List<Colleague>> getColleaguesByRestaurant(String restaurant) {
+    public MutableLiveData<List<Colleague>> getColleaguesByRestaurant(String restaurantId) {
 
         getColleaguesCollection()
-                .whereNotEqualTo("colleagueId", getCurrentColleagueID())
                 .whereEqualTo("lastSelectedRestaurantDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
-                .whereEqualTo("selectedRestaurant", restaurant)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         ArrayList<Colleague> colleagues = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Colleague colleague = document.toObject(Colleague.class);
-                            if(colleague.getSelectedRestaurant() != null) {
+                            if(Objects.requireNonNull(colleague.getSelectedRestaurant()).getRestaurantId().equals(restaurantId)) {
                                 colleagues.add(colleague);
                             }
                         }
@@ -132,11 +134,10 @@ public class FirebaseRepository {
                 .addOnFailureListener(e -> colleagueList.postValue(null));
         return colleagueList;
 
-    }/*
+    }
     public void getColleaguesCount(Restaurant restaurant, ColleagueRestaurantCallback callback) {
 
         getColleaguesCollection()
-                .whereNotEqualTo("colleagueId", getCurrentColleagueID())
                 .whereEqualTo("lastSelectedRestaurantDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                 .get()
                 .addOnCompleteListener(task -> {
@@ -145,6 +146,8 @@ public class FirebaseRepository {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Colleague colleague = document.toObject(Colleague.class);
                             if (colleague.getSelectedRestaurant() != null) {
+                                String given = colleague.getSelectedRestaurant().getRestaurantId();
+                                String expected = restaurant.getRestaurantId();
                                 if (colleague.getSelectedRestaurant().getRestaurantId().equals(restaurant.getRestaurantId())) {
                                     colleagues.add(colleague);
                                 }
@@ -193,9 +196,9 @@ public class FirebaseRepository {
         return selectedRestaurantLiveData;
     }
 
-    public void addLikedRestaurant(Restaurant restaurant) {
+    public void addLikedRestaurant(String restaurantId) {
         FirebaseUser colleague = getCurrentUser();
-        this.getColleaguesCollection().document(colleague.getUid()).collection(USER_LIKED_RESTAURANT_COLLECTION).add(restaurant);
+        this.getColleaguesCollection().document(colleague.getUid()).collection(USER_LIKED_RESTAURANT_COLLECTION).add(new LikedRestaurant(restaurantId));
     }
     public void getLikedRestaurant(String restaurantId, LikedRestaurantCallback callback) {
         FirebaseUser colleague = getCurrentUser();
@@ -207,7 +210,7 @@ public class FirebaseRepository {
                     .get().addOnCompleteListener(task -> callback.onLikedRestaurantReceived(task.isSuccessful() && !task.getResult().isEmpty()));
         }
     }
-    public void removeLikedRestaurant(Restaurant restaurant) {
+    public void removeLikedRestaurant(String restaurantID) {
         FirebaseUser colleague = getCurrentUser();
         if (colleague != null) {
             String uid = colleague.getUid();
@@ -217,7 +220,7 @@ public class FirebaseRepository {
 
             // Recherche du document correspondant au restaurant dans la collection
             likedRestaurantsCollection
-                    .whereEqualTo(USER_LIKED_RESTAURANT_ID, restaurant.getRestaurantId())
+                    .whereEqualTo(USER_LIKED_RESTAURANT_ID, restaurantID)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
@@ -273,5 +276,5 @@ public class FirebaseRepository {
         if(user != null){
             getColleaguesCollection().document(user.getUid()).update("wantsNotification", wantsNotification);
         }
-    }*/
+    }
 }

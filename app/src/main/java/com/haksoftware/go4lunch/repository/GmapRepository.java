@@ -1,10 +1,17 @@
 package com.haksoftware.go4lunch.repository;
 
 
+import androidx.annotation.NonNull;
+
+import com.haksoftware.go4lunch.model.nearbysearch_json_with_pojo.ResponseDistanceMatrix;
 import com.haksoftware.go4lunch.model.nearbysearch_json_with_pojo.ResponseGMAP;
+import com.haksoftware.go4lunch.ui.restaurant_list.DistanceMatrixCallback;
 import com.haksoftware.go4lunch.utils.PlacesApiHelper;
 
+
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GmapRepository {
 
@@ -22,7 +29,7 @@ public class GmapRepository {
     public Call<ResponseGMAP> getNearbyRestaurants(double latitude, double longitude, int radius) {
 
         return PlacesApiHelper.getNearbyRestaurants(latitude, longitude, radius);
-    }/*
+    }
     public Call<ResponseDistanceMatrix> getDistance(String destination, String origin, String unit, DistanceMatrixCallback callback) {
 
 
@@ -34,7 +41,6 @@ public class GmapRepository {
                 if (response.isSuccessful()) {
                     if(response.body() != null) {
                         String distance = response.body().getRows().get(0).getElements().get(0).getDistance().getText();
-                        //distance.replace(" km", "");
                         callback.onDistanceReceived(distance);
                     }
                 } else {
@@ -49,5 +55,5 @@ public class GmapRepository {
             }
         });
         return PlacesApiHelper.getDistance(destination, origin, unit);
-    }*/
+    }
 }

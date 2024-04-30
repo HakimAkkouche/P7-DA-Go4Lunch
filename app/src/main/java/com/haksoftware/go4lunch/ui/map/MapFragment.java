@@ -1,6 +1,7 @@
 package com.haksoftware.go4lunch.ui.map;
 
 import static com.haksoftware.go4lunch.utils.Utils.generateBitmap;
+import static com.haksoftware.go4lunch.utils.Utils.getRestaurantFromPlace;
 
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -26,7 +27,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Granularity;
 import com.google.android.gms.location.LocationCallback;
@@ -47,6 +50,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.haksoftware.go4lunch.BuildConfig;
 import com.haksoftware.go4lunch.R;
@@ -61,7 +65,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, ColleaguesCountLoadedCallback {
     private static final int REQUEST_CODE = 101;
     private static final String PERM_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final String PERM_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -72,13 +76,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private MapViewModel mapViewModel;
-    private MutableLiveData<Location> currentLocation = new MutableLiveData<>();
-    private AutocompleteSupportFragment autocompleteFragment;
+    private final MutableLiveData<Location> currentLocation = new MutableLiveData<>();
     private View autoCompleteView;
     private SupportMapFragment mapFragment;
-    private double latitude, longitude;
-
     private List<Restaurant> restaurantList = new ArrayList<>();
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -86,7 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         setHasOptionsMenu(true);
 
         mapViewModel =
-                new ViewModelProvider(this, ViewModelFactory.getInstance(getActivity().getApplication())).get(MapViewModel.class);
+                new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance(requireActivity().getApplication())).get(MapViewModel.class);
 
         locationCallback = new LocationCallback() {
             @Override
@@ -130,8 +132,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         getCurrentLocation();
         setAutocompleteFragment();
-
-        mapViewModel.getRestaurantMutableLiveData().observe(getViewLifecycleOwner(), this::showNearbyRestaurant);
     }
 
 
@@ -176,7 +176,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setAutocompleteFragment() {
-        autocompleteFragment = (AutocompleteSupportFragment)
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         if(autocompleteFragment != null) {
             autoCompleteView = autocompleteFragment.getView();
@@ -200,7 +200,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             autocompleteFragment.setHint("search restaurant");
             autocompleteFragment.setCountries("FR");
             autocompleteFragment.setTypesFilter(Collections.singletonList(PlaceTypes.RESTAURANT));
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
 
+                @Override
+                public void onPlaceSelected(@NonNull Place place) {
+                    Restaurant restaurant = getRestaurantFromPlace(requireContext(), place);
+                    Objects.requireNonNull(mapViewModel.getRestaurantMutableLiveData().getValue()).add(restaurant);
+                    restaurantList.add(restaurant);
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(restaurant.getLatitude(), restaurant.getLongitude()))
+                            .icon(BitmapDescriptorFactory.fromBitmap(generateBitmap(requireContext(), R.drawable.ic_restaurant_location, false)))
+                            .snippet(String.valueOf(mapViewModel.getRestaurantMutableLiveData().getValue().size()-1));
+                    Marker marker = googleMap.addMarker(markerOptions);
+                    if (marker != null) {
+                        marker.showInfoWindow();
+                    }
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(restaurant.getLatitude(), restaurant.getLongitude()),15.5f));
+                }
+
+                @Override
+                public void onError(@NonNull Status status) {
+                    Log.e("Error", "onPlaceSelected: " + status.getStatusMessage());
+
+                }
+            });
 
         }
     }
@@ -210,7 +233,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
      * we just add a marker near Sydney, Australia.
-     *
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -279,21 +301,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
     private void updateNearbyRestaurants(Location location) {
         mapViewModel.getNearbyRestaurants(location.getLatitude(),
-                location.getLongitude(), RADIUS).observe(getViewLifecycleOwner(), this::showNearbyRestaurant);
+                location.getLongitude(), RADIUS, this).observe(getViewLifecycleOwner(), show -> {
+            showNearbyRestaurant();
+        });
     }
 
-    private void showNearbyRestaurant(List<Restaurant> restaurantList){
+    private void showNearbyRestaurant(){
         int pos = 0;
         for (Restaurant restaurant : restaurantList) {
-
+            boolean hasColleagues = restaurant.getColleaguesCount() > 0;
             MarkerOptions markerOptions = new MarkerOptions()
-                    .position(restaurant.getLatLng())
-                    .icon(BitmapDescriptorFactory.fromBitmap(generateBitmap(requireContext(), R.drawable.ic_restaurant_location, false)))
+                    .position(new LatLng(restaurant.getLatitude(), restaurant.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(generateBitmap(requireContext(), R.drawable.ic_restaurant_location, hasColleagues)))
                     .snippet(String.valueOf(pos));
-            Marker marker = googleMap.addMarker(markerOptions);
-            if (marker != null) {
-                marker.showInfoWindow();
-            }
+            googleMap.addMarker(markerOptions);
             pos++;
         }
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(requireContext(), restaurantList));
@@ -304,6 +325,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Bundle bundle = new Bundle();
             bundle.putParcelable("selectedRestaurant", selectedRestaurant);
 
+            NavHostFragment.findNavController(MapFragment.this)
+                    .navigate(R.id.action_MapFragment_to_RestaurantDetailFragment, bundle);
         });
     }
     private boolean checkLocationPermission() {
@@ -317,5 +340,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     REQUEST_CODE);
             return false;
         }
+    }
+
+    @Override
+    public void colleaguesCountLoaded(List<Restaurant> restaurantList) {
+        this.restaurantList = restaurantList;
+        showNearbyRestaurant();
     }
 }

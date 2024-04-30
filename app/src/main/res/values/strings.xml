@@ -29,7 +29,8 @@
     <string name="choice_made"> is eating at </string>
     <string name="opening_hours">Opening hours :</string>
     <string name="notifications">Activate reminder at noon</string>
-    <string name="time_to_eat">It\'s time to eat !</string>
+    <string name="time_to_eat">It\'s time to eat at</string>
+    <string name="participant">Participants :</string>
     <string name="restaurant_picture">restaurant picture</string>
     <string name="user_name">User name</string>
     <string name="email">email</string>

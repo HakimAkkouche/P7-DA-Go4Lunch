@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.Objects;
 
 public class Restaurant implements Parcelable {
@@ -26,7 +24,8 @@ public class Restaurant implements Parcelable {
     private String editorialSummary;
     @Nullable
     private String urlPicture;
-    private int countColleagues;
+    private int colleaguesCount;
+    private String distance;
 
     // Constructeur sans argument nécessaire pour la désérialisation Firebase
     public Restaurant() {
@@ -150,10 +149,6 @@ public class Restaurant implements Parcelable {
         return urlWebsite;
     }
 
-    public LatLng getLatLng() {
-        return new LatLng(latitude, longitude);
-    }
-
     public double getLatitude() {
         return latitude;
     }
@@ -162,15 +157,22 @@ public class Restaurant implements Parcelable {
         return longitude;
     }
 
-    public int getCountColleagues() {
-        return countColleagues;
+    public int getColleaguesCount() {
+        return colleaguesCount;
     }
 
-    public void setCountColleagues(int countColleagues) {
-        this.countColleagues = countColleagues;
+    public void setColleaguesCount(int colleaguesCount) {
+        this.colleaguesCount = colleaguesCount;
     }
 
-    //endregion
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+//endregion
 
 
     @Override

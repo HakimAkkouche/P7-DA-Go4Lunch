@@ -26,7 +26,6 @@ import java.util.List;
 
 public class LoginActivity  extends AppCompatActivity {
     private static final int REQUEST_CODE = 101;
-    private static final String INTERNET = Manifest.permission.INTERNET;
     private static final String PERM_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final String PERM_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final int RC_SIGN_IN = 999;
@@ -128,17 +127,16 @@ public class LoginActivity  extends AppCompatActivity {
     }
 
     private boolean checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, PERM_ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        return ActivityCompat.checkSelfPermission(this, PERM_ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, PERM_ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, PERM_ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        return false;
+                && ActivityCompat.checkSelfPermission(this, PERM_ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void askLocationPermission() {
         ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET},
+                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.INTERNET},
                 REQUEST_CODE);
     }
     @Override
