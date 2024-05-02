@@ -25,10 +25,11 @@ import com.haksoftware.go4lunch.repository.FirebaseRepository;
 import com.haksoftware.go4lunch.ui.map.MapViewModel;
 import com.haksoftware.go4lunch.utils.NotificationScheduler;
 import com.haksoftware.go4lunch.utils.NotificationService;
+import com.haksoftware.go4lunch.utils.OnProfileUpdateListener;
 import com.haksoftware.go4lunch.utils.RestaurantSelectedClickedListener;
 import com.haksoftware.go4lunch.utils.ViewModelFactory;
 
-public class MainActivity extends AppCompatActivity implements RestaurantSelectedClickedListener {
+public class MainActivity extends AppCompatActivity implements RestaurantSelectedClickedListener, OnProfileUpdateListener {
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
@@ -109,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements RestaurantSelecte
         nameTextView.setText(nameUser);
         emailTextView.setText(emailUser);
         setProfileImage(pictureUrlUser);
+    }
+    @Override
+    public void updateProfilePhoto(Uri newPhotoUri) {
+        setProfileImage(newPhotoUri);
     }
     private void setProfileImage(Uri profileImage){
         ImageView pictureImageView = navigationView.getHeaderView(0).findViewById(R.id.imageView);
