@@ -95,7 +95,6 @@ public class FirebaseRepository {
 
     public MutableLiveData<List<Colleague>> getAllColleagues() {
         getColleaguesCollection()
-                .whereNotEqualTo("colleagueId", getCurrentColleagueID())
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -146,8 +145,6 @@ public class FirebaseRepository {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Colleague colleague = document.toObject(Colleague.class);
                             if (colleague.getSelectedRestaurant() != null) {
-                                String given = colleague.getSelectedRestaurant().getRestaurantId();
-                                String expected = restaurant.getRestaurantId();
                                 if (colleague.getSelectedRestaurant().getRestaurantId().equals(restaurant.getRestaurantId())) {
                                     colleagues.add(colleague);
                                 }

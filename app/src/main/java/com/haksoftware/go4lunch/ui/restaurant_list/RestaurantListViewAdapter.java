@@ -110,7 +110,8 @@ public class RestaurantListViewAdapter extends ListAdapter<Restaurant, Restauran
             binding.distanceTv.setText(restaurant.getDistance());
             String colleaguesCount = "(" + restaurant.getColleaguesCount() +")";
             binding.colleaguesCountTv.setText(colleaguesCount);
-            binding.openingTimeTv.setText(restaurant.getOpeningHours());
+            String openingHours = binding.getRoot().getContext().getString(R.string.opening_hours) + " " + restaurant.getOpeningHours();
+            binding.openingTimeTv.setText(openingHours);
             binding.rating.setRating(restaurant.getRating()*3/5);
             Call<ResponseBody> call = PlacesApiHelper.getRestaurantPhoto(restaurant.getUrlPicture(), 400, 400);
 

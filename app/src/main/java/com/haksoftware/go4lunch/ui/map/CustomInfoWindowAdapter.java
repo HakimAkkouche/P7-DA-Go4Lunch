@@ -22,10 +22,12 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private final View window;
     private final List<Restaurant> restaurantList;
     private final View contents;
+    private final Context context;
 
     @SuppressLint("InflateParams")
     CustomInfoWindowAdapter(Context context, List<Restaurant> restaurantList) {
         this.restaurantList = restaurantList;
+        this.context = context;
         window = LayoutInflater.from(context).inflate(R.layout.custom_info_window, null);
         contents = LayoutInflater.from(context).inflate(R.layout.custom_info_window, null);
     }
@@ -59,7 +61,8 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         RatingBar snippetUiType = ( view.findViewById(R.id.info_rating_bar));
         snippetUiType.setRating(restaurantList.get(pos).getRating()*3/5);
         TextView snippetUiDesc = (view.findViewById(R.id.snippet_desc));
-        snippetUiDesc.setText(restaurantList.get(pos).getEditorialSummary());
+        String summary = restaurantList.get(pos).getEditorialSummary().equals("") ? context.getString(R.string.summary_not_available) : restaurantList.get(pos).getEditorialSummary();
+        snippetUiDesc.setText(summary);
         snippetUiDesc.setOnClickListener(view1 -> {
 
         });

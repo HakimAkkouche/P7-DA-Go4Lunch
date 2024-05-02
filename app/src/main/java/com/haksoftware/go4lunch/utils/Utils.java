@@ -21,7 +21,7 @@ import java.util.Objects;
 
 public class Utils {
 
-    public static Restaurant getRestaurantFromPlacesItem(Context context, PlacesItem result){
+    public static Restaurant getRestaurantFromPlacesItem(PlacesItem result){
 
         StringBuilder type = new StringBuilder();
         for (String s :
@@ -38,7 +38,7 @@ public class Utils {
         if(result.getWebsiteUri() != null) {
             urlWebsite = result.getWebsiteUri();
         }
-        String openingHours = context.getString(R.string.opening_hours) + " ";
+        String openingHours = "";
         if( result.getCurrentOpeningHours() != null) {
 
             openingHours += result.getCurrentOpeningHours().getPeriods().get(0).getOpen().getHour() +
@@ -52,7 +52,7 @@ public class Utils {
                             result.getCurrentOpeningHours().getPeriods().get(0).getClose().getMinute());
         }
 
-        String editorialSummary = result.getEditorialSummary() != null ?  result.getEditorialSummary().getText() : context.getString(R.string.summary_not_available);
+        String editorialSummary = result.getEditorialSummary() != null ?  result.getEditorialSummary().getText() : "";
 
         return new Restaurant(result.getId(),
                 result.getDisplayName().getText(),

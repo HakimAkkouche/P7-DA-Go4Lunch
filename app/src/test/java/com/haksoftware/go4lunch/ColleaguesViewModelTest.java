@@ -31,8 +31,8 @@ public class ColleaguesViewModelTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        colleaguesViewModel = mock(ColleaguesViewModel.class);
         repository = mock(FirebaseRepository.class);
+        colleaguesViewModel = new ColleaguesViewModel(repository);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ColleaguesViewModelTest {
         colleagueList.add(mock(Colleague.class));
         mockColleagueList.postValue(colleagueList);
 
-        when(colleaguesViewModel.getColleagues()).thenReturn(mockColleagueList);
+        when(repository.getAllColleagues()).thenReturn(mockColleagueList);
         assertEquals(mockColleagueList, colleaguesViewModel.getColleagues());
     }
 }
