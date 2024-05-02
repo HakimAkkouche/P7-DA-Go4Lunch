@@ -8,6 +8,10 @@ public class EditorialSummary{
 		return text;
 	}
 
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public String getLanguageCode(){
 		return languageCode;
 	}

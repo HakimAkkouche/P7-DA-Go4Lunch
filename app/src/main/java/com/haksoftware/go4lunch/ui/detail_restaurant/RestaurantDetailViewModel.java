@@ -13,6 +13,7 @@ public class RestaurantDetailViewModel extends ViewModel {
 
     private LikedRestaurantCallback likedRestaurantCallback;
     private final FirebaseRepository firebaseRepository;
+    private final MutableLiveData<List<Colleague>> colleaguesByRestaurant = new MutableLiveData<>();
 
     public RestaurantDetailViewModel( FirebaseRepository firebaseRepository) {
         this.firebaseRepository = firebaseRepository;
@@ -25,7 +26,8 @@ public class RestaurantDetailViewModel extends ViewModel {
         return selectedRestaurantMLD;
     }
     public MutableLiveData<List<Colleague>> getRestaurantColleagues(Restaurant restaurant){
-        return firebaseRepository.getColleaguesByRestaurant(restaurant.getRestaurantId());
+        colleaguesByRestaurant.setValue(firebaseRepository.getColleaguesByRestaurant(restaurant.getRestaurantId()).getValue());
+        return colleaguesByRestaurant;
     }
     public void setLikedRestaurantCallback(LikedRestaurantCallback callback) {
         this.likedRestaurantCallback = callback;

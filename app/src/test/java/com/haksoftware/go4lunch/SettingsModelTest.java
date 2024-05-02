@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import android.app.Application;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
@@ -28,14 +30,14 @@ public class SettingsModelTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        settingsViewModel = mock(SettingsViewModel.class);
         repository = mock(FirebaseRepository.class);
+        settingsViewModel = new SettingsViewModel(mock(Application.class), repository);
     }
 
     @Test
     public void testGetCurrentUser() {
         FirebaseUser mockUser = mock(FirebaseUser.class);
-        when(settingsViewModel.getCurrentUser()).thenReturn(mockUser);
+        when(repository.getCurrentUser()).thenReturn(mockUser);
         assertEquals(mockUser, settingsViewModel.getCurrentUser());
     }
     @Test
@@ -43,7 +45,7 @@ public class SettingsModelTest {
         MutableLiveData<Boolean> mockWantsNotification = new MutableLiveData<>();
         mockWantsNotification.postValue(true);
 
-        when(settingsViewModel.getWantsNotification()).thenReturn(mockWantsNotification);
+        when(repository.getWantsNotification()).thenReturn(mockWantsNotification);
         assertEquals(mockWantsNotification, settingsViewModel.getWantsNotification());
     }
 }

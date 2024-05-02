@@ -31,7 +31,7 @@ public class GmapRepositoryTest {
 
     @Before
     public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         server = new MockWebServer();
         server.start();
     }
@@ -43,17 +43,14 @@ public class GmapRepositoryTest {
 
     @Test
     public void testGetNearbyRestaurants() {
-        // Arrange
         GmapRepository repository = GmapRepository.getInstance();
         String mockResponse = "{\"status\":\"OK\"}";
         server.enqueue(new MockResponse().setBody(mockResponse));
 
-        // Act
-        Call<ResponseGMAP> call = repository.getNearbyRestaurants(37.7749, -122.4194, 1000);
+        Call<ResponseGMAP> call = repository.getNearbyRestaurants( 37.7749, -122.4194, 1000);
         call.enqueue(new Callback<ResponseGMAP>() {
             @Override
             public void onResponse(@NonNull Call<ResponseGMAP> call, @NonNull Response<ResponseGMAP> response) {
-                // Assert
                 assert response.isSuccessful();
             }
 
@@ -62,35 +59,26 @@ public class GmapRepositoryTest {
                 assert false;
             }
         });
-
-        // Assert
-        assert true; // Add your assertions here
     }
 
     @Test
     public void testGetDistance() {
-        // Arrange
         GmapRepository repository = GmapRepository.getInstance();
         String mockResponse = "{\"rows\":[{\"elements\":[{\"distance\":{\"text\":\"10 km\"}}]}]}";
         server.enqueue(new MockResponse().setBody(mockResponse));
 
-        // Act
         Call<ResponseDistanceMatrix> call = repository.getDistance("destination", "origin", "unit", callback);
         call.enqueue(new Callback<ResponseDistanceMatrix>() {
             @Override
             public void onResponse(@NonNull Call<ResponseDistanceMatrix> call, @NonNull Response<ResponseDistanceMatrix> response) {
-                // Assert
                 assert response.isSuccessful();
                 verify(callback).onDistanceReceived("10 km");
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResponseDistanceMatrix> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseDistanceMatrix> call, @NonNull Throwable t) {
                 assert false;
             }
         });
-
-        // Assert
-        assert true; // Add your assertions here
     }
 }

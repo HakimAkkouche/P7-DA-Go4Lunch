@@ -59,7 +59,7 @@ public class MapViewModel extends AndroidViewModel {
                     if (results != null && !results.isEmpty()) {
                         int i = 0;
                         for (PlacesItem result : results) {
-                            Restaurant restaurant = getRestaurantFromPlacesItem(context, result);
+                            Restaurant restaurant = getRestaurantFromPlacesItem(result);
 
                             String destination = restaurant.getLatitude() + "," + restaurant.getLongitude();
 
@@ -104,8 +104,10 @@ public class MapViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<Restaurant> getTodaySelectedRestaurant() {
-        firebaseRepository.getSelectedRestaurant(restaurantSelectedMLD::setValue);
-
+        MutableLiveData<Restaurant> restaurantMLD = firebaseRepository.getSelectedRestaurant(restaurantSelectedMLD::setValue);
+        if (restaurantMLD != null){
+            return restaurantMLD;
+        }
         return restaurantSelectedMLD;
     }
 
